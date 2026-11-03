@@ -1,0 +1,26 @@
+// 人狼 中継サーバーの設定(Cloudflare Workers)
+// このファイルと index.js を、リポジトリ jinro-server の一番上(フォルダの外)に置く。
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "jinro-server",
+  "main": "index.js",
+  "compatibility_date": "2025-06-01",
+  "observability": { "enabled": true },
+
+  // ルーム1つ = Durable Object 1つ
+  "durable_objects": {
+    "bindings": [
+      { "name": "ROOMS", "class_name": "Room" }
+    ]
+  },
+  // 無料プランでは SQLite 型の Durable Object を使う
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["Room"] }
+  ],
+
+  "vars": {
+    // ゲームを置いたサイトだけに使わせる時は、ここに書く(例 "https://jh0ndo3.github.io")。
+    // 複数ならカンマ区切り。空のままなら制限なし。
+    "ALLOWED_ORIGINS": ""
+  }
+}
